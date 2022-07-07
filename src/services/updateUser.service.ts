@@ -2,6 +2,7 @@ import AppDataSource from "../data-source";
 import { User } from "../entities/user.entity";
 import { AppError } from "../errors/AppError";
 import { IUser } from "../interfaces/user.interface";
+import { hash } from "bcryptjs";
 
 const updateUserService = async ({
   age,
@@ -18,12 +19,15 @@ const updateUserService = async ({
     throw new AppError("User not found", 404);
   }
 
+  const hashedPassword = await hash(password, 10);
+
   const updatedUser = {
     ...user,
     age: age,
     name: name,
     email: email,
-    password: password,
+    password: password ? hashedPassword : password,
+    updated_at: new Date(),
   };
 
   const userUpdated = await userRepository.save(updatedUser);
