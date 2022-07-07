@@ -10,3 +10,10 @@ export interface IUser extends IUserRequest {
   createdAt?: Date;
   updatedAt?: Date;
 }
+
+export interface IUserUpdated {
+  name?: string;
+  email?: string;
+  password?: string;
+  age?: number;
+}

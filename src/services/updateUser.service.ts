@@ -1,16 +1,13 @@
 import AppDataSource from "../data-source";
 import { User } from "../entities/user.entity";
 import { AppError } from "../errors/AppError";
-import { IUser } from "../interfaces/user.interface";
+import { IUser, IUserUpdated } from "../interfaces/user.interface";
 import { hash } from "bcryptjs";
 
-const updateUserService = async ({
-  age,
-  email,
-  name,
-  id,
-  password,
-}: IUser): Promise<void> => {
+const updateUserService = async (
+  { age, email, name }: IUserUpdated,
+  id: string
+) => {
   const userRepository = AppDataSource.getRepository(User);
 
   const user = await userRepository.findOneBy({ id: id });
@@ -19,18 +16,12 @@ const updateUserService = async ({
     throw new AppError("User not found", 404);
   }
 
-  const hashedPassword = await hash(password, 10);
+  c;
+  const updated = { age, email, name };
 
-  const updatedUser = {
-    ...user,
-    age: age,
-    name: name,
-    email: email,
-    password: password ? hashedPassword : password,
-    updated_at: new Date(),
-  };
+  await userRepository.update({ id: id }, updated);
 
-  const userUpdated = await userRepository.save(updatedUser);
+  return user;
 };
 
 export default updateUserService;
