@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  api:
+    container_name: api
+    image: node:16-alpine
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      - DB_USER=tiago
+      - DB_PASSWORD=123
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB=products_management
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - .:/app
+
+  db:
+    container_name: db
+    image: postgres:14.3
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=tiago
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_DB=products_management
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tiago -d products_management"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
