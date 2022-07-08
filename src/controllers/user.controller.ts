@@ -34,7 +34,7 @@ const updateUserController = async (req: Request, res: Response) => {
   const id = req.params.id;
   const { name, email, password, age }: IUser = req.body;
 
-  const user = await updateUserService({ age, email, name, password, id });
+  const user = await updateUserService({ age, email, name, password }, id);
 
   return res.json(user);
 };
